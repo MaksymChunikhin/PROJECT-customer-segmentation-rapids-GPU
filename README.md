@@ -165,3 +165,20 @@ Open:
 ```text
 notebooks/PROJECT-customer_segmentation_rapids.ipynb
 ```
+
+---
+
+## Tests
+
+Unit tests for the inference module are CPU-only (the cuML pipeline is mocked),
+so they run anywhere without a GPU:
+
+```bash
+pytest tests/ -v
+```
+
+Coverage:
+- valid inputs return an `int` cluster id
+- the underlying pipeline receives a correctly-shaped DataFrame
+- negative `Recency` / `Frequency` / `Monetary` raise `ValueError`
+- missing model artifact raises `FileNotFoundError`
