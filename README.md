@@ -71,35 +71,6 @@ Online Retail transactional dataset containing:
 
 ---
 
-# Project Structure
-
-```text
-cluster_project/
-│
-├── data/
-│   └── raw/
-│       └── data.csv
-│
-├── notebooks/
-│   └── PROJECT-Customer Segmentation.ipynb
-│
-├── outputs/
-│   ├── models/
-│   │   ├── kmeans_model.pkl
-│   │   └── preprocessing_pipeline.pkl
-│   │
-│   └── rfm_clusters.csv
-│
-├── src/
-│   └── inference/
-│       └── predict.py
-│
-├── README.md
-└── requirements.txt
-```
-
----
-
 # Project Pipeline
 
 ## 1. Data Cleaning
