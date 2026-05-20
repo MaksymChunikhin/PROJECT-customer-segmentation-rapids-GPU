@@ -12,7 +12,7 @@ The project combines:
 - RFM analysis
 - GPU-accelerated clustering
 - RAPIDS ecosystem
-- preprocessing pipelines
+- production-ready ML pipeline
 - UMAP visualization
 - inference pipeline for new customers
 
@@ -115,6 +115,8 @@ Performed analysis:
 - AvgBasketSize
 - UniqueProducts
 
+Additional features were tested experimentally but did not improve clustering quality compared to classical RFM features.
+
 ---
 
 ## 4. Outlier Handling
@@ -125,164 +127,15 @@ Removed:
 
 ---
 
-## 5. Preprocessing Pipeline
+## 5. Final Production Pipeline
 
-Implemented reusable preprocessing pipeline:
+Implemented final production-ready pipeline:
 
 ```python
 Pipeline([
-    ("log_transform", FunctionTransformer(np.log1p)),
-    ("scaler", StandardScaler())
+    ("scaler", StandardScaler()),
+    ("kmeans", KMeans(
+        n_clusters=4,
+        random_state=42
+    ))
 ])
-```
-
-The pipeline:
-- centralizes preprocessing;
-- improves reproducibility;
-- simplifies inference;
-- is saved as a model artifact.
-
----
-
-## 6. GPU Clustering
-
-Compared clustering algorithms:
-- RAPIDS KMeans
-- RAPIDS DBSCAN
-- RAPIDS HDBSCAN
-
-GPU acceleration is implemented using:
-- cuDF
-- cuML
-- CuPy
-
----
-
-## 7. Visualization
-
-Implemented:
-- UMAP visualization;
-- customer cluster visualization;
-- clustering comparison;
-- customer analytics charts.
-
-Visualization was built for:
-- KMeans;
-- DBSCAN;
-- HDBSCAN.
-
----
-
-## 8. Model Evaluation
-
-Used:
-- silhouette score;
-- clustering comparison;
-- baseline vs extended features comparison.
-
-GPU evaluation implemented with:
-
-```python
-cython_silhouette_score
-```
-
----
-
-## 9. Customer Segments
-
-The final KMeans model identified 4 customer segments:
-
-| Segment | Description |
-|---|---|
-| VIP Customers | High-value loyal customers |
-| New Customers | Recently active customers |
-| Potential Churn | Customers with churn risk |
-| Low Value Customers | Low-engagement customers |
-
----
-
-# Results
-
-## Final Model
-- RAPIDS KMeans
-- 4 clusters
-- Silhouette Score: **0.3318**
-
-## Key Findings
-- Classical RFM features outperformed extended feature set.
-- GPU acceleration significantly improved clustering workflow.
-- UMAP visualization showed clear cluster separation.
-- KMeans achieved the best clustering quality for this dataset.
-
----
-
-# Inference Pipeline
-
-Implemented inference function:
-
-```python
-predict_customer_segment(...)
-```
-
-The inference pipeline:
-- loads preprocessing pipeline;
-- preprocesses new customer data;
-- predicts customer segment.
-
----
-
-# Model Artifacts
-
-Saved artifacts:
-- `kmeans_model.pkl`
-- `preprocessing_pipeline.pkl`
-- `rfm_clusters.csv`
-
----
-
-# How to Run
-
-## Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## Open notebook
-
-```bash
-jupyter notebook
-```
-
-Open:
-
-```text
-notebooks/PROJECT-Customer Segmentation.ipynb
-```
-
----
-
-# Future Improvements
-
-Potential improvements:
-- radar charts;
-- PCA visualization;
-- advanced hyperparameter tuning;
-- seasonal behavior features;
-- deployment with FastAPI;
-- dashboard integration.
-
----
-
-# Conclusion
-
-This project demonstrates a production-oriented GPU Data Science workflow for customer segmentation using RAPIDS and clustering algorithms.
-
-The project includes:
-- preprocessing pipelines;
-- GPU clustering;
-- model evaluation;
-- inference pipeline;
-- business interpretation of customer segments.
-
-It represents a complete end-to-end Customer Segmentation ML system.
