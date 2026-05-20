@@ -1,135 +1,63 @@
 # Customer Segmentation and Market Intelligence System
 
-GPU-accelerated customer segmentation project using RAPIDS, cuML, and clustering algorithms for customer analytics and personalized marketing strategies.
+GPU-accelerated customer segmentation project built with RAPIDS and cuML for customer analytics and clustering.
 
 ---
 
-# Project Overview
+## Project Overview
 
-The goal of this project is to segment customers of an online retail store based on transactional behavior and purchasing history.
+This project implements an end-to-end customer segmentation workflow for an online retail dataset using GPU-accelerated clustering algorithms.
 
-The project combines:
-- RFM analysis
-- GPU-accelerated clustering
-- RAPIDS ecosystem
+Main features:
+- RFM customer analysis
+- RAPIDS GPU clustering
+- KMeans / DBSCAN / HDBSCAN comparison
 - production-ready ML pipeline
 - UMAP visualization
 - inference pipeline for new customers
 
-The system is designed in a production-oriented style and demonstrates a complete customer segmentation workflow.
+The final solution uses a production-style sklearn Pipeline with RAPIDS-based clustering and reusable inference workflow.
 
 ---
 
-# Business Goal
+## Tech Stack
 
-The company wants to better understand customer behavior and move from mass marketing to personalized customer interaction strategies.
-
-The resulting customer segments can be used for:
-- personalized marketing;
-- retention strategies;
-- customer analytics;
-- recommendation systems;
-- churn analysis.
-
----
-
-# Tech Stack
-
-## GPU / RAPIDS
-- NVIDIA RTX 3090
+### GPU / RAPIDS
 - RAPIDS cuDF
 - RAPIDS cuML
 - CuPy
 
-## Machine Learning
+### Machine Learning
 - RAPIDS KMeans
 - RAPIDS DBSCAN
 - RAPIDS HDBSCAN
 - sklearn Pipeline
 
-## Data Processing
+### Data Processing & Visualization
 - pandas
 - NumPy
-
-## Visualization
 - matplotlib
 - seaborn
-- plotly
 - UMAP
 
 ---
 
-# Dataset
+## Pipeline
 
-Online Retail transactional dataset containing:
-- invoices;
-- products;
-- quantities;
-- prices;
-- countries;
-- customer IDs.
+### Data Processing
+- data cleaning
+- duplicate removal
+- return filtering
+- outlier handling
+- RFM feature engineering
 
----
+### Clustering
+Compared:
+- RAPIDS KMeans
+- RAPIDS DBSCAN
+- RAPIDS HDBSCAN
 
-# Project Pipeline
-
-## 1. Data Cleaning
-
-Implemented:
-- missing values handling;
-- duplicate removal;
-- return filtering;
-- special transaction filtering;
-- zero-price removal;
-- TotalPrice feature creation.
-
-Only service-related transaction codes are removed:
-- POST
-- D
-- M
-- BANK CHARGES
-- DOT
-- CRUK
-
----
-
-## 2. Exploratory Data Analysis (EDA)
-
-Performed analysis:
-- top countries;
-- monthly revenue;
-- customer activity;
-- orders by hour;
-- top customers by revenue.
-
----
-
-## 3. Feature Engineering
-
-## RFM Features
-- Recency
-- Frequency
-- Monetary
-
-## Additional Features
-- AvgBasketSize
-- UniqueProducts
-
-Additional features were tested experimentally but did not improve clustering quality compared to classical RFM features.
-
----
-
-## 4. Outlier Handling
-
-Removed:
-- top 5% Frequency;
-- top 5% Monetary.
-
----
-
-## 5. Final Production Pipeline
-
-Implemented final production-ready pipeline:
+### Final Production Pipeline
 
 ```python
 Pipeline([
@@ -139,3 +67,73 @@ Pipeline([
         random_state=42
     ))
 ])
+```
+
+The final pipeline combines preprocessing and clustering into a reusable inference-ready artifact.
+
+---
+
+## Results
+
+### Final Model
+- RAPIDS KMeans
+- 4 clusters
+- Silhouette Score: **0.3318**
+
+### Key Findings
+- Classical RFM features outperformed extended feature engineering.
+- KMeans achieved the best clustering quality.
+- GPU acceleration significantly improved clustering workflow.
+- UMAP visualization showed clear cluster separation.
+
+---
+
+## Inference Pipeline
+
+```python
+predict_customer_segment(...)
+```
+
+Inference workflow:
+- loads final pipeline;
+- preprocesses new customer data;
+- predicts customer segment.
+
+---
+
+## Model Artifacts
+
+Saved artifacts:
+- `final_pipeline.pkl`
+- `rfm_clusters.csv`
+
+---
+
+## Project Structure
+
+```text
+PROJECT-customer-segmentation-rapids-GPU/
+│
+├── notebooks/
+├── outputs/
+├── src/
+│   └── inference/
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+---
+
+## Run Project
+
+```bash
+pip install -r requirements.txt
+jupyter notebook
+```
+
+Open:
+
+```text
+notebooks/PROJECT-customer_segmentation_rapids.ipynb
+```
