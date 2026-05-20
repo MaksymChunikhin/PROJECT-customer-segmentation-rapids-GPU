@@ -13,6 +13,3 @@ __pycache__/
 
 # data
 data/raw/*.csv
-
-# models
-*.pkl
