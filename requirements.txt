@@ -1,14 +1,23 @@
-numpy
-pandas
-joblib
+# Core data stack
+numpy>=1.24,<2.0
+pandas>=2.0,<2.3
+joblib>=1.3
 
-cupy
-cudf
-cuml
+# Machine learning
+scikit-learn>=1.3,<1.6
 
-scikit-learn
+# Visualization
+matplotlib>=3.7
+seaborn>=0.13
+plotly>=5.18
+umap-learn>=0.5.5
 
-matplotlib
-seaborn
+# Jupyter
+jupyter>=1.0
 
-umap-learn
+# GPU / RAPIDS (NOT installable via plain pip — see README)
+# Install via conda or the official RAPIDS pip index, matched to your CUDA version:
+#   https://docs.rapids.ai/install
+# cupy-cuda12x
+# cudf-cu12
+# cuml-cu12

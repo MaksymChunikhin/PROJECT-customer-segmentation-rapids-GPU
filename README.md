@@ -16,7 +16,7 @@ Main features:
 - UMAP visualization
 - inference pipeline for new customers
 
-The final solution uses a production-style sklearn Pipeline with RAPIDS-based clustering and reusable inference workflow.
+The final solution uses a production-style sklearn `Pipeline` with RAPIDS-based clustering and a reusable inference workflow.
 
 ---
 
@@ -38,6 +38,7 @@ The final solution uses a production-style sklearn Pipeline with RAPIDS-based cl
 - NumPy
 - matplotlib
 - seaborn
+- plotly (interactive 3D)
 - UMAP
 
 ---
@@ -61,15 +62,13 @@ Compared:
 
 ```python
 Pipeline([
+    ("log_transform", FunctionTransformer(np.log1p)),
     ("scaler", StandardScaler()),
-    ("kmeans", KMeans(
-        n_clusters=4,
-        random_state=42
-    ))
+    ("kmeans", KMeans(n_clusters=4, random_state=42)),
 ])
 ```
 
-The final pipeline combines preprocessing and clustering into a reusable inference-ready artifact.
+The final pipeline combines preprocessing and clustering into a reusable, inference-ready artifact.
 
 ---
 
@@ -81,43 +80,52 @@ The final pipeline combines preprocessing and clustering into a reusable inferen
 - Silhouette Score: **0.3318**
 
 ### Key Findings
-- Classical RFM features outperformed extended feature engineering.
-- KMeans achieved the best clustering quality.
-- GPU acceleration significantly improved clustering workflow.
-- UMAP visualization showed clear cluster separation.
+- Classical RFM features outperformed extended feature engineering (0.250 vs 0.332 silhouette).
+- KMeans (0.332) and DBSCAN (0.325) showed comparable quality; KMeans was chosen for production due to a fixed number of segments, no noise points, and easier inference.
+- HDBSCAN (0.145) gave noticeably weaker separation on this dataset.
+- GPU acceleration significantly improved the clustering workflow.
 
 ---
 
 ## Inference Pipeline
 
 ```python
-predict_customer_segment(...)
+from src.inference.predict import predict_customer_segment
+
+cluster_id = predict_customer_segment(recency=30, frequency=5, monetary=250.0)
 ```
 
-Inference workflow:
-- loads final pipeline;
-- preprocesses new customer data;
-- predicts customer segment.
+The inference function:
+- lazily loads the trained pipeline,
+- preprocesses new customer data,
+- predicts the customer segment.
+
+Requires a GPU and a working RAPIDS / cuML installation, since the saved pipeline contains a `cuml.KMeans` estimator.
 
 ---
 
 ## Model Artifacts
 
 Saved artifacts:
-- `final_pipeline.pkl`
-- `rfm_clusters.csv`
+- `outputs/models/final_pipeline.pkl`
+- `outputs/rfm_clusters.csv` (optional, produced from the notebook)
 
 ---
 
 ## Project Structure
 
 ```text
-PROJECT-customer-segmentation-rapids-GPU/
+cluster_project/
 │
+├── data/
+│   └── raw/                # input CSV (gitignored)
 ├── notebooks/
+│   └── PROJECT-customer_segmentation_rapids.ipynb
 ├── outputs/
+│   └── models/             # trained pipeline (committed)
 ├── src/
 │   └── inference/
+│       └── predict.py
 ├── requirements.txt
 ├── README.md
 └── .gitignore
@@ -127,8 +135,28 @@ PROJECT-customer-segmentation-rapids-GPU/
 
 ## Run Project
 
+### 1. Install RAPIDS (GPU, CUDA required)
+
+RAPIDS packages (`cudf`, `cuml`, `cupy`) **cannot be installed via plain `pip install -r requirements.txt`**.
+Use conda or the official RAPIDS pip index matched to your CUDA version: https://docs.rapids.ai/install
+
+Example (conda, CUDA 12):
+
+```bash
+conda create -n rapids -c rapidsai -c conda-forge -c nvidia \
+    rapids=24.10 python=3.11 cuda-version=12.5
+conda activate rapids
+```
+
+### 2. Install Python dependencies
+
 ```bash
 pip install -r requirements.txt
+```
+
+### 3. Launch Jupyter
+
+```bash
 jupyter notebook
 ```
 
